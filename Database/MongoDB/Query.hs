@@ -1529,7 +1529,8 @@ queryRequestOpMsg isExplain Query{..} = do
           where s = selector selection
                 bSize = if qBatchSize == 0 then Nothing else Just ("batchSize" =: qBatchSize)
                 mLimit = if limit == 0 then Nothing else maybe Nothing (\rL -> Just ("limit" =: (fromIntegral rL :: Int32))) remainingLimit
-                c = ("filter" =: s) : special ++ maybeToList bSize ++ maybeToList mLimit
+                mSkip = if skip == 0 then Nothing else Just ("skip" =: (fromIntegral skip :: Int32))
+                c = ("filter" =: s) : special ++ maybeToList mSkip ++ maybeToList bSize ++ maybeToList mLimit
 
 batchSizeRemainingLimit :: BatchSize -> Maybe Limit -> (Int32, Maybe Limit)
 -- ^ Given batchSize and limit return P.qBatchSize and remaining limit
